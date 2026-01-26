@@ -483,33 +483,64 @@ body {
 
 .modules-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 40px;
-    max-width: 1000px;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    /* Auto wrap */
+    gap: 30px;
+    max-width: 1200px;
     width: 90%;
     margin: 0 auto 60px auto;
 }
 
 .module-card {
-    flex: 1;
     background: #f5f5f7;
     /* Apple light gray surface */
     border: none;
     border-radius: 30px;
-    /* More rounded */
     padding: 40px;
     display: flex;
     flex-direction: column;
     gap: 20px;
     transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-    /* Smooth bezel curve */
     text-decoration: none;
     position: relative;
     overflow: hidden;
     box-shadow: none;
     align-items: flex-start;
-    height: 350px;
+    min-height: 300px;
+    /* Fluid height */
     justify-content: space-between;
+}
+
+/* Mobile/Tablet Adjustments */
+@media (max-width: 768px) {
+    .platform-title {
+        font-size: 2rem;
+    }
+
+    .modules-grid {
+        grid-template-columns: 1fr;
+        /* Stack on mobile */
+        gap: 20px;
+    }
+
+    .module-card {
+        min-height: auto;
+        padding: 30px;
+    }
+}
+
+display: flex;
+flex-direction: column;
+gap: 20px;
+transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+/* Smooth bezel curve */
+text-decoration: none;
+position: relative;
+overflow: hidden;
+box-shadow: none;
+align-items: flex-start;
+height: 350px;
+justify-content: space-between;
 }
 
 .module-card:hover {
