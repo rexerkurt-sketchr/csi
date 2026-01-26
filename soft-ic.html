@@ -1,128 +1,609 @@
-<!DOCTYPE html>
-<html lang="en">
+:root {
+    --bg-color: #f1f5f9;
+    /* Slate 100 - Light background */
+    --panel-bg: #8c9096;
+    /* Metallic gradient base - handled in classes */
+    --text-primary: #1e293b;
+    /* Slate 800 - High contrast text */
+    --text-secondary: #475569;
+    /* Slate 600 */
+    --accent: #0284c7;
+    /* Sky 600 - Professional Blue */
+    --accent-hover: #0369a1;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --border: #cbd5e1;
+    /* Slate 300 */
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AFM Soft Intermittent Contact Mode</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
+    --font-ui: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
 
-<body>
-    <div class="app-container">
-        <header class="app-header">
-            <div class="header-title-group">
-                <h1>Soft Intermittent Contact Mode <span class="beta-tag">AFM Visualizer</span></h1>
-                <p class="subtitle">Interactive educational simulation of force-distance based scanning</p>
-            </div>
-            <a href="index.html" class="back-btn">
-                <span>←</span> Back to Hub
-            </a>
-        </header>
+    --metal-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    --metal-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --surface-gradient: linear-gradient(to bottom, #d1d5db 0%, #9ca3af 100%);
+}
 
-        <main class="visualization-area">
-            <canvas id="sim-canvas"></canvas>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-            <div class="overlays">
-                <div class="indicator" id="state-indicator">State: <span id="state-bead"></span> <span
-                        id="state-text">IDLE</span></div>
-                <div class="readout-panel">
-                    <div class="readout-item">
-                        <label>Z-Position</label>
-                        <span id="z-pos-val">0.00 nm</span>
-                    </div>
-                    <div class="readout-item">
-                        <label>Force</label>
-                        <span id="force-val">0.00 nN</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Edu overlay follows -->
+body {
+    background-color: #e2e8f0;
+    background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+    background-size: 20px 20px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
 
-            <!-- Positioned absolutely to the right relative to .visualization-area -->
-            <div id="edu-overlay" class="edu-card edu-top-right">
-                <div class="edu-header">
-                    <span class="edu-icon-main">🎓</span>
-                    <h3>Soft IC Cycle</h3>
-                </div>
-                <ul class="edu-steps">
-                    <li id="step-1" class="step-item">
-                        <span class="step-num">1</span>
-                        <div class="step-content">
-                            <strong>Topography & Stiffness</strong>
-                            <small>Detect surface at contact</small>
-                        </div>
-                    </li>
-                    <li id="step-2" class="step-item">
-                        <span class="step-num">2</span>
-                        <div class="step-content">
-                            <strong>Constant Force</strong>
-                            <small>Quantitative Measurements (SThM, PFM...)</small>
-                        </div>
-                    </li>
-                    <li id="step-3" class="step-item">
-                        <span class="step-num">3</span>
-                        <div class="step-content">
-                            <strong>Adhesion</strong>
-                            <small>Pull-off force measurement</small>
-                        </div>
-                    </li>
-                    <li id="step-4" class="step-item">
-                        <span class="step-num">4</span>
-                        <div class="step-content">
-                            <strong>Next Point</strong>
-                            <small>Lift & Move (Frictionless)</small>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </main>
+.app-container {
+    width: 95vw;
+    height: 90vh;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        "header header"
+        "viz controls";
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
 
-        <aside class="controls-panel">
-            <div class="control-group">
-                <h3>Parameters</h3>
+.app-header {
+    grid-area: header;
+    padding: 1rem 2rem;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
-                <div class="control-item">
-                    <label for="setpoint-slider">Force Setpoint (nN)</label>
-                    <input type="range" id="setpoint-slider" min="0.1" max="10" step="0.1" value="2.0">
-                    <span class="value-display" id="setpoint-val">2.0</span>
-                </div>
+.header-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
 
-                <!-- Speed control removed for educational clarity -->
+.app-header h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+}
 
-                <div class="control-item">
-                    <label for="lift-slider">Lift Height (nm)</label>
-                    <input type="range" id="lift-slider" min="10" max="100" step="5" value="50">
-                    <span class="value-display" id="lift-val">50</span>
-                </div>
-            </div>
+.beta-tag {
+    font-size: 0.75rem;
+    background: var(--accent);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    vertical-align: middle;
+    margin-left: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
 
-            <div class="control-group">
-                <h3>Actions</h3>
-                <button id="btn-start" class="btn-primary">Start Scan</button>
-                <button id="btn-reset" class="btn-secondary">Reset</button>
-            </div>
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
 
-            <div class="info-box">
-                <h4>How it works</h4>
-                <p>The tip "hops" across the surface:</p>
-                <ol>
-                    <li>Lift up (Safety)</li>
-                    <li>Move X (Step)</li>
-                    <li>Approach (Until Force = Setpoint)</li>
-                    <li>Measure Z</li>
-                    <li>Retract</li>
-                </ol>
-            </div>
-        </aside>
-    </div>
+.back-btn {
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: white;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
-    <script type="module" src="simulation.js"></script>
-</body>
+.back-btn:hover {
+    background: #f1f5f9;
+    color: var(--text-primary);
+    border-color: #94a3b8;
+}
 
-</html>
+.visualization-area {
+    grid-area: viz;
+    position: relative;
+    background: #f1f5f9;
+    /* Light background for Viz */
+    overflow: hidden;
+    border-right: 1px solid var(--border);
+}
+
+#sim-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.overlays {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    pointer-events: none;
+}
+
+.indicator {
+    background: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: var(--metal-shadow);
+    color: var(--text-primary);
+}
+
+#state-bead {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--text-secondary);
+    box-shadow: none;
+    /* Removed glow */
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.readout-panel {
+    background: white;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: var(--metal-shadow);
+}
+
+.readout-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    align-items: center;
+    padding-bottom: 4px;
+    border-bottom: 1px dashed #e2e8f0;
+}
+
+.readout-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.readout-item label {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.readout-item span {
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.controls-panel {
+    grid-area: controls;
+    background: #f8fafc;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow-y: auto;
+}
+
+.control-group h3 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 4px;
+}
+
+.control-item {
+    margin-bottom: 1.25rem;
+}
+
+.control-item label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.value-display {
+    font-family: var(--font-mono);
+    color: var(--accent);
+    background: #e0f2fe;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+input[type="range"] {
+    width: 100%;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid var(--accent);
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.1s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+.btn-primary,
+.btn-secondary {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-primary {
+    background: linear-gradient(to bottom, #0284c7, #0ea5e9);
+    color: white;
+    border: 1px solid #0284c7;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(to bottom, #0369a1, #0284c7);
+}
+
+.btn-secondary {
+    background: white;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+}
+
+.btn-secondary:hover {
+    background: #f1f5f9;
+    color: var(--text-primary);
+    border-color: #94a3b8;
+}
+
+.info-box {
+    background: white;
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    /* Info box border */
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.info-box h4 {
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.info-box ol,
+.info-box ul {
+    padding-left: 1.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.edu-card {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 1px;
+    /* Inner border trick if needed */
+    border-radius: 8px;
+    color: var(--text-primary);
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: var(--metal-shadow);
+    transition: all 0.3s ease;
+    margin-top: 0;
+    /* fix */
+    pointer-events: none;
+}
+
+.edu-top-right {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    margin-top: 0 !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid var(--border) !important;
+    backdrop-filter: blur(5px);
+    z-index: 10;
+    padding: 16px !important;
+}
+
+.edu-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 5px;
+}
+
+.edu-header h3 {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.edu-steps {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    border-radius: 6px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    opacity: 0.5;
+    transition: all 0.2s;
+}
+
+.step-item.active {
+    background: #f0f9ff;
+    /* Light blue tint */
+    border-color: var(--accent);
+    opacity: 1;
+    transform: translateX(-2px);
+    /* Subtle shift */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.step-num {
+    background: white;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    border: 1px solid #cbd5e1;
+}
+
+.step-item.active .step-num {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+.step-content strong {
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    display: block;
+}
+
+.step-content small {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+}
+
+/* Spectrum in light mode */
+.spectrum-container {
+    background: white !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--metal-shadow);
+}
+
+.spectrum-container div {
+    color: var(--text-secondary) !important;
+}
+
+/* Apple-like Minimalism overrides */
+body {
+    background-color: #ffffff;
+    /* Pure white */
+    background-image: none;
+    /* No pattern */
+    color: #1d1d1f;
+    /* Apple dark gray */
+}
+
+/* Landing Page Specifics */
+.brand-header {
+    text-align: center;
+    margin-bottom: 60px;
+    margin-top: 40px;
+}
+
+.platform-title {
+    font-size: 3rem;
+    font-weight: 600;
+    /* Semi-bold, not heavy */
+    color: #1d1d1f;
+    margin-bottom: 10px;
+    letter-spacing: -0.015em;
+    text-shadow: none;
+    line-height: 1.1;
+}
+
+.platform-subtitle {
+    color: #86868b;
+    /* Apple gray */
+    font-size: 1.25rem;
+    max-width: 600px;
+    margin: 0 auto;
+    font-weight: 400;
+}
+
+.modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    /* Auto wrap */
+    gap: 30px;
+    max-width: 1200px;
+    width: 90%;
+    margin: 0 auto 60px auto;
+}
+
+.module-card {
+    background: #f5f5f7;
+    /* Apple light gray surface */
+    border: none;
+    border-radius: 30px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    box-shadow: none;
+    align-items: flex-start;
+    min-height: 300px;
+    /* Fluid height */
+    justify-content: space-between;
+}
+
+/* Mobile/Tablet Adjustments */
+@media (max-width: 768px) {
+    .platform-title {
+        font-size: 2rem;
+    }
+
+    .modules-grid {
+        grid-template-columns: 1fr;
+        /* Stack on mobile */
+        gap: 20px;
+    }
+
+    .module-card {
+        min-height: auto;
+        padding: 30px;
+    }
+}
+
+display: flex;
+flex-direction: column;
+gap: 20px;
+transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+/* Smooth bezel curve */
+text-decoration: none;
+position: relative;
+overflow: hidden;
+box-shadow: none;
+align-items: flex-start;
+height: 350px;
+justify-content: space-between;
+}
+
+.module-card:hover {
+    transform: scale(1.02);
+    background: #ffffff;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.card-content {
+    z-index: 2;
+}
+
+.card-content h2 {
+    font-size: 1.75rem;
+    color: #1d1d1f;
+    font-weight: 600;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+}
+
+.card-content p {
+    color: #1d1d1f;
+    font-size: 1rem;
+    line-height: 1.5;
+    opacity: 0.8;
+}
+
+/* Replaced Emoji Icons with Clean CSS Shapes/Text */
+.card-icon {
+    display: none;
+    /* Hide emojis */
+}
+
+.module-card::after {
+    content: "↗";
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    font-size: 1.5rem;
+    color: #0071e3;
+    /* Apple Blue */
+    opacity: 0;
+    transform: translate(-10px, 10px);
+    transition: all 0.4s ease;
+}
+
+.module-card:hover::after {
+    opacity: 1;
+    transform: translate(0, 0);
+}
+
+/* Specific card styling identifiers */
+.module-card[href="soft-ic.html"] {
+    background: #fbfbfd;
+}
+
+.module-card[href="hdkfm.html"] {
+    background: #fbfbfd;
+}
