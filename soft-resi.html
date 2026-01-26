@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soft ResiScope Mode</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-title-group">
+                <h1>Soft ResiScope &trade; <span class="beta-tag" style="background: #a855f7;">Hybrid</span></h1>
+                <p class="subtitle">Intermittent Contact Electrical Characterization (Soft Samples)</p>
+            </div>
+            <a href="index.html" class="back-btn">
+                <span>←</span> Back to Hub
+            </a>
+        </header>
+
+        <main class="visualization-area">
+            <canvas id="sim-canvas"></canvas>
+
+            <div class="overlays">
+                <div class="indicator" id="state-indicator">State: <span id="state-bead"></span> <span
+                        id="state-text">IDLE</span></div>
+                <div class="readout-panel">
+                    <div class="readout-item">
+                        <label>Force (Z)</label>
+                        <span id="force-val">0.00 nN</span>
+                    </div>
+                    <div class="readout-item">
+                        <label>Resistance (R)</label>
+                        <span id="res-val" style="color: #a855f7">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="edu-overlay" class="edu-card edu-top-right">
+                <div class="edu-header">
+                    <span class="edu-icon-main">🫧</span>
+                    <h3>Soft ResiScope Cycle</h3>
+                </div>
+                <ul class="edu-steps">
+                    <li id="step-1" class="step-item">
+                        <span class="step-num">1</span>
+                        <div class="step-content">
+                            <strong>Lift (No Friction)</strong>
+                            <small>xy motion only when tip is up</small>
+                        </div>
+                    </li>
+                    <li id="step-2" class="step-item">
+                        <span class="step-num">2</span>
+                        <div class="step-content">
+                            <strong>Approach</strong>
+                            <small>Constant Force Control</small>
+                        </div>
+                    </li>
+                    <li id="step-3" class="step-item">
+                        <span class="step-num">3</span>
+                        <div class="step-content">
+                            <strong>Measure R</strong>
+                            <small>Static tip (No shear force)</small>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </main>
+
+        <aside class="controls-panel">
+            <div class="control-group">
+                <h3>Params</h3>
+                <div class="control-item">
+                    <label>Force Setpoint (nN)</label>
+                    <input type="range" id="force-slider" min="0.5" max="5" step="0.5" value="1.0">
+                    <span class="value-display" id="force-val-display">1.0</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Actions</h3>
+                <button id="btn-start" class="btn-primary">Start soft Scan</button>
+                <button id="btn-reset" class="btn-secondary">Reset</button>
+            </div>
+
+            <div class="info-box">
+                <h4>What is Soft ResiScope?</h4>
+                <p>Combines <strong>Soft IC</strong> (Intermittent Contact) with <strong>ResiScope</strong>.</p>
+                <p>It allows electrical measurement of delicate samples (polymers, biological) by eliminating friction,
+                    while keeping the wide dynamic range.</p>
+            </div>
+        </aside>
+    </div>
+
+    <script type="module" src="soft-resi.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResiScope Mode</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-title-group">
+                <h1>ResiScope &trade; <span class="beta-tag" style="background: #22c55e;">Conductive</span></h1>
+                <p class="subtitle">Wide Dynamic Range Current Mapping (10 Decades)</p>
+            </div>
+            <a href="index.html" class="back-btn">
+                <span>←</span> Back to Hub
+            </a>
+        </header>
+
+        <main class="visualization-area">
+            <canvas id="sim-canvas"></canvas>
+
+            <div class="overlays">
+                <div class="indicator" id="state-indicator">State: <span id="state-bead"></span> <span
+                        id="state-text">SCANNING</span></div>
+                <div class="readout-panel">
+                    <div class="readout-item">
+                        <label>Resistance (R)</label>
+                        <span id="res-val" style="color: #22c55e">1.0 GΩ</span>
+                    </div>
+                    <div class="readout-item">
+                        <label>Current (I)</label>
+                        <span id="curr-val">1.0 nA</span>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <!-- Educational Overlay -->
+            <div id="edu-overlay" class="edu-card edu-top-right">
+                <div class="edu-header">
+                    <span class="edu-icon-main">⚡</span>
+                    <h3>ResiScope Principle</h3>
+                </div>
+                <ul class="edu-steps">
+                    <li id="step-1" class="step-item active">
+                        <span class="step-num">C</span>
+                        <div class="step-content">
+                            <strong>Contact Mode</strong>
+                            <small>Continuous surface contact</small>
+                        </div>
+                    </li>
+                    <li id="step-2" class="step-item active">
+                        <span class="step-num">DSP</span>
+                        <div class="step-content">
+                            <strong>Real-time Auto Gain</strong>
+                            <small>No Saturation (pA to mA)</small>
+                        </div>
+                    </li>
+                    <li id="step-3" class="step-item active">
+                        <span class="step-num">R</span>
+                        <div class="step-content">
+                            <strong>10 Decades</strong>
+                            <small>Measure Insulators & Conductors</small>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </main>
+
+        <aside class="controls-panel">
+            <div class="control-group">
+                <h3>Params</h3>
+                <div class="control-item">
+                    <label>Bias Voltage (V)</label>
+                    <input type="range" id="bias-voltage" min="0.1" max="10" step="0.1" value="1.0">
+                    <span class="value-display" id="bias-val">1.0</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Comparison</h3>
+                <div class="control-item">
+                    <label>Mode</label>
+                    <select id="mode-select"
+                        style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                        <option value="resiscope">ResiScope (Auto Gain)</option>
+                        <option value="cafm">Traditional C-AFM (Fixed)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Actions</h3>
+                <button id="btn-start" class="btn-primary">Start Scan</button>
+                <button id="btn-reset" class="btn-secondary">Reset</button>
+            </div>
+
+            <div class="info-box">
+                <h4>Why ResiScope?</h4>
+                <p>Standard C-AFM saturates easily. <strong>ResiScope</strong> uses a <strong>DSP</strong> to adjust
+                    gain in real-time, allowing measurement of resistance from 10² to 10¹² Ω in a single scan.</p>
+            </div>
+        </aside>
+    </div>
+
+    <script type="module" src="resiscope.js"></script>
+</body>
+
+</html>

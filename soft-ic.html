@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFM Soft Intermittent Contact Mode</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-title-group">
+                <h1>Soft Intermittent Contact Mode <span class="beta-tag">AFM Visualizer</span></h1>
+                <p class="subtitle">Interactive educational simulation of force-distance based scanning</p>
+            </div>
+            <a href="index.html" class="back-btn">
+                <span>←</span> Back to Hub
+            </a>
+        </header>
+
+        <main class="visualization-area">
+            <canvas id="sim-canvas"></canvas>
+
+            <div class="overlays">
+                <div class="indicator" id="state-indicator">State: <span id="state-bead"></span> <span
+                        id="state-text">IDLE</span></div>
+                <div class="readout-panel">
+                    <div class="readout-item">
+                        <label>Z-Position</label>
+                        <span id="z-pos-val">0.00 nm</span>
+                    </div>
+                    <div class="readout-item">
+                        <label>Force</label>
+                        <span id="force-val">0.00 nN</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Edu overlay follows -->
+
+            <!-- Positioned absolutely to the right relative to .visualization-area -->
+            <div id="edu-overlay" class="edu-card edu-top-right">
+                <div class="edu-header">
+                    <span class="edu-icon-main">🎓</span>
+                    <h3>Soft IC Cycle</h3>
+                </div>
+                <ul class="edu-steps">
+                    <li id="step-1" class="step-item">
+                        <span class="step-num">1</span>
+                        <div class="step-content">
+                            <strong>Topography & Stiffness</strong>
+                            <small>Detect surface at contact</small>
+                        </div>
+                    </li>
+                    <li id="step-2" class="step-item">
+                        <span class="step-num">2</span>
+                        <div class="step-content">
+                            <strong>Constant Force</strong>
+                            <small>Quantitative Measurements (SThM, PFM...)</small>
+                        </div>
+                    </li>
+                    <li id="step-3" class="step-item">
+                        <span class="step-num">3</span>
+                        <div class="step-content">
+                            <strong>Adhesion</strong>
+                            <small>Pull-off force measurement</small>
+                        </div>
+                    </li>
+                    <li id="step-4" class="step-item">
+                        <span class="step-num">4</span>
+                        <div class="step-content">
+                            <strong>Next Point</strong>
+                            <small>Lift & Move (Frictionless)</small>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </main>
+
+        <aside class="controls-panel">
+            <div class="control-group">
+                <h3>Parameters</h3>
+
+                <div class="control-item">
+                    <label for="setpoint-slider">Force Setpoint (nN)</label>
+                    <input type="range" id="setpoint-slider" min="0.1" max="10" step="0.1" value="2.0">
+                    <span class="value-display" id="setpoint-val">2.0</span>
+                </div>
+
+                <!-- Speed control removed for educational clarity -->
+
+                <div class="control-item">
+                    <label for="lift-slider">Lift Height (nm)</label>
+                    <input type="range" id="lift-slider" min="10" max="100" step="5" value="50">
+                    <span class="value-display" id="lift-val">50</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Actions</h3>
+                <button id="btn-start" class="btn-primary">Start Scan</button>
+                <button id="btn-reset" class="btn-secondary">Reset</button>
+            </div>
+
+            <div class="info-box">
+                <h4>How it works</h4>
+                <p>The tip "hops" across the surface:</p>
+                <ol>
+                    <li>Lift up (Safety)</li>
+                    <li>Move X (Step)</li>
+                    <li>Approach (Until Force = Setpoint)</li>
+                    <li>Measure Z</li>
+                    <li>Retract</li>
+                </ol>
+            </div>
+        </aside>
+    </div>
+
+    <script type="module" src="simulation.js"></script>
+</body>
+
+</html>
