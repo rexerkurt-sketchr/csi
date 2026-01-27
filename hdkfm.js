@@ -218,8 +218,11 @@ export class KFMApplication {
             this.ctx.textAlign = 'left';
         }
 
-        // 4. Draw Tip
+        // 4. Draw Tip with Resonance Vibration
+        const time = Date.now() * 0.02;
+        const vibration = this.state.isRunning ? Math.sin(time) * 3 : 0; // 3px amplitude vibration
         const tipSc = toScreen(this.state.tipX, this.state.tipZ);
+        tipSc.y += vibration; // Apply vibration
 
         // Electrical Field Lines (if scanning)
         if (this.state.isRunning) {
