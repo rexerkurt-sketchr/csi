@@ -73,9 +73,7 @@ export class ResiScopeApp {
             this.draw();
         });
 
-        document.getElementById('mode-select').addEventListener('change', (e) => {
-            this.state.mode = e.target.value;
-        });
+
 
         document.getElementById('bias-voltage').addEventListener('input', (e) => {
             document.getElementById('bias-val').textContent = e.target.value;
@@ -97,36 +95,39 @@ export class ResiScopeApp {
         const idx = Math.floor(this.state.tipX / step);
         const surf = this.surface[idx] || this.surface[0];
 
-        this.state.tipZ = surf.z + 10; // Tip height (virtual)
+        this.state.tipZ = surf.z; // Tip height (Actual Contact)
 
         // Measurement Logic
         let rLog = surf.rLog;
-        let visibleR = rLog;
-        let isSaturated = false;
 
-        // C-AFM Limitation Simulation
-        if (this.state.mode === 'cafm') {
-            // C-AFM usually has fixed gain range, e.g., 6 decades.
-            // Let's say it can only see 10^6 to 10^10.
-            // Below 6 (Conductor) -> Saturates (Too much current)
-            // Above 10 (Insulator) -> Noise floor
-            if (rLog < 6) { visibleR = 6; isSaturated = true; } // Saturation
-            if (rLog > 10) visibleR = 10; // Noise
-        }
+        // 1. ResiScope (Full Range 2-12)
+        let resiR = rLog;
+
+        // 2. C-AFM (Limited Range)
+        // Saturates below 10^6 (Too much current) and noise above 10^10 (Too little)
+        let cafmR = rLog;
+        let isCafmSat = false;
+        if (rLog < 6) { cafmR = 6; isCafmSat = true; }
+        if (rLog > 10) { cafmR = 10; isCafmSat = true; }
 
         // Record for graph
         if (idx % 2 === 0) {
             this.state.measuredCurr.push({
                 x: this.state.tipX,
-                r: visibleR,
-                sat: isSaturated
+                rResi: resiR,
+                rCafm: cafmR,
+                cafmSat: isCafmSat
             });
         }
 
         // UI Updates
-        const rVal = Math.pow(10, visibleR);
-        document.getElementById('res-val').textContent = isSaturated ? "SATURATION" : this.formatR(rVal);
-        document.getElementById('res-val').style.color = isSaturated ? '#ef4444' : '#22c55e';
+        const rVal = Math.pow(10, resiR);
+        document.getElementById('res-val').textContent = this.formatR(rVal);
+
+        // Show sat warning if current point is saturated
+        if (isCafmSat) {
+            document.getElementById('res-val').innerHTML += " <br><span style='font-size:0.7rem; color:red'>(C-AFM Saturated)</span>";
+        }
     }
 
     formatR(ohms) {
@@ -158,13 +159,6 @@ export class ResiScopeApp {
             const s1 = toScreen(p1.x, p1.z);
             const s2 = toScreen(p2.x, p2.z);
 
-            // Color based on R (Mapping Visualization)
-            // Heatmap style:
-            // Insulator (High R) -> Dark Blue (#1e3a8a)
-            // Semi -> Purple (#7c3aed)
-            // Conductor (Low R) -> Orange (#f97316)
-            // Metal (Very Low R) -> Yellow (#facc15)
-
             let color = '#1e3a8a'; // Insulator
             if (p1.rLog < 10) color = '#7c3aed'; // Semi
             if (p1.rLog < 5) color = '#f97316'; // Conductor
@@ -174,33 +168,62 @@ export class ResiScopeApp {
             this.ctx.fillRect(s1.x, s1.y, (s2.x - s1.x) + 1, 100); // Filled block
         }
 
-        // 2. Graph (Resistance/Current) - Floating above
+        // 2. Graph (Resistance) - Floating above
         if (this.state.measuredCurr.length > 0) {
+
+            // Draw C-AFM Trace (Red/Limited)
             this.ctx.beginPath();
-            this.ctx.strokeStyle = '#22c55e';
-            this.ctx.lineWidth = 2;
-
+            this.ctx.strokeStyle = 'rgba(239, 68, 68, 0.6)'; // Red transparent
+            this.ctx.lineWidth = 4;
             for (let m of this.state.measuredCurr) {
-                // Map log R to Y (Direct R mapping: 2=Low, 12=High)
-                // Range 2 to 12
-                const normH = (m.r - 2) * 15; // Scale factor
+                const normH = (m.rCafm - 2) * 15;
                 const graphY = offsetY - 150 - normH;
-
                 const sc = toScreen(m.x, 0);
-                // Override X to match screen
-
                 if (m.x === this.state.measuredCurr[0].x) this.ctx.moveTo(sc.x, graphY);
                 else this.ctx.lineTo(sc.x, graphY);
-
-                if (m.sat) {
-                    // Draw red marker for saturation
-                    this.ctx.fillStyle = 'red';
-                    this.ctx.fillRect(sc.x, graphY - 2, 2, 4);
-                }
             }
             this.ctx.stroke();
+
+            // Draw ResiScope Trace (Green/Full)
+            this.ctx.beginPath();
+            this.ctx.strokeStyle = '#22c55e'; // Green
+            this.ctx.lineWidth = 2;
+            for (let m of this.state.measuredCurr) {
+                const normH = (m.rResi - 2) * 15;
+                const graphY = offsetY - 150 - normH;
+                const sc = toScreen(m.x, 0);
+                if (m.x === this.state.measuredCurr[0].x) this.ctx.moveTo(sc.x, graphY);
+                else this.ctx.lineTo(sc.x, graphY);
+            }
+            this.ctx.stroke();
+
             this.ctx.fillStyle = '#22c55e';
-            this.ctx.fillText("Resistance (Log R)", 10, offsetY - 250);
+            this.ctx.font = 'bold 12px Inter';
+            this.ctx.fillText("ResiScope (Full Range)", 10, offsetY - 250);
+            this.ctx.fillStyle = '#ef4444';
+            this.ctx.fillText("Standard C-AFM (Limited)", 10, offsetY - 235);
+
+            // Draw "Out of C-AFM Range" Labels on saturations
+            this.ctx.font = 'bold 10px Inter';
+            this.ctx.textAlign = 'center';
+
+            // Check specific regions known to be out of range
+            // Metal Region (High Conductive) -> C-AFM Saturates at 10^6
+            // Insulator Region -> C-AFM Noise at 10^10
+
+            // We just check current buffer for saturation events
+            // To avoid flickering text, we draw static labels if the tip has passed that area
+
+            const metalRegionX = 1500;
+            if (this.state.tipX > metalRegionX) {
+                const sc = toScreen(metalRegionX, 0);
+                const graphY = offsetY - 150 - ((6 - 2) * 15); // Saturation level height (10^6)
+
+                this.ctx.fillStyle = 'rgba(239, 68, 68, 0.9)';
+                this.ctx.fillRect(sc.x - 50, graphY + 10, 100, 20);
+                this.ctx.fillStyle = 'white';
+                this.ctx.fillText("Out of C-AFM Range!", sc.x, graphY + 23);
+            }
 
             // Draw Region Labels if scanned
             this.ctx.font = 'bold 11px Inter';
@@ -216,21 +239,13 @@ export class ResiScopeApp {
             ];
 
             for (let lbl of labels) {
-                // Check if we have measured this point (approx)
-                // We scan continuously, so just check tipX > lbl.x
-                if (this.state.tipX > lbl.x || (this.state.measureCurr && this.state.measureCurr.length > 0 && this.state.measureCurr[this.state.measureCurr.length - 1].x > lbl.x)) {
-                    // Check existing measure data to be sure or just use static knowledge since deterministic
-                    // Let's rely on tipX for simplicity
-
+                if (this.state.tipX > lbl.x) {
                     const rVal = Math.pow(10, lbl.rLog);
                     const text = this.formatR(rVal);
-
-                    // Calc Y pos same as graph
                     const normH = (lbl.rLog - 2) * 15;
                     const graphY = offsetY - 150 - normH;
                     const sc = toScreen(lbl.x, 0);
 
-                    // Draw Label Box
                     const textWidth = this.ctx.measureText(text).width;
                     this.ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
                     this.ctx.fillRect(sc.x - textWidth / 2 - 4, graphY - 20, textWidth + 8, 16);
