@@ -82,13 +82,13 @@ export class SoftResiApp {
         if (!this.state.isRunning) return;
 
         const surf = this.getSurfaceAt(this.state.tipX);
-        const contactZ = surf.z + 10;
+        const contactZ = surf.z; // Exact surface contact
 
         // Soft IC State Machine
         switch (this.state.phase) {
             case 'LIFT':
                 this.state.tipZ += 2;
-                if (this.state.tipZ > contactZ + 40) {
+                if (this.state.tipZ > contactZ + 50) { // Lift higher
                     this.state.phase = 'MOVE';
                 }
                 break;
