@@ -156,7 +156,7 @@ export class KPFM_Comparison {
         this.ctx.clearRect(0, 0, w, h);
 
         const graphH = h * 0.5;
-        const surfY = h - 60;
+        const surfY = h - 120; // Moved up to accommodate larger surface
 
         // --- 1. Graph ---
         this.ctx.fillStyle = '#f8fafc';
@@ -217,7 +217,7 @@ export class KPFM_Comparison {
             const g = Math.floor(val * 200);
 
             this.ctx.fillStyle = `rgb(${r},${g},50)`;
-            this.ctx.fillRect(x, surfY, 2, 60);
+            this.ctx.fillRect(x, surfY, 2, 120); // Height doubled to 120
         }
 
         // Draw Tip with Resonance
