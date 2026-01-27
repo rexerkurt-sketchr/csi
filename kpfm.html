@@ -4,32 +4,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HD-KFM Mode Visualizer</title>
+    <title>KPFM vs HD-KFM | Advanced Electrical Modes</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Specific overrides for KFM viz */
-        .potential-map {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            width: 200px;
-            height: 20px;
-            background: linear-gradient(to right, #3b82f6, #eab308);
-            border-radius: 4px;
-            border: 1px solid var(--border);
+        .mode-switch-container {
+            display: flex;
+            background: #e2e8f0;
+            padding: 4px;
+            border-radius: 8px;
+            margin-bottom: 20px;
         }
 
-        .legend-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.7rem;
+        .mode-btn {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
             color: var(--text-secondary);
-            margin-top: 4px;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active {
+            background: white;
+            color: var(--accent);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .hd-tag {
+            background: #f59e0b;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            margin-left: 5px;
+        }
+
+        .mode-btn.active .hd-tag {
+            background: #d97706;
         }
 
         /* Video Modal Styles */
@@ -112,8 +131,8 @@
     <div class="app-container">
         <header class="app-header">
             <div class="header-title-group">
-                <h1>HD-KFM Mode <span class="beta-tag" style="background: #eab308;">Electric</span></h1>
-                <p class="subtitle">High Definition Kelvin Probe Force Microscopy</p>
+                <h1>KPFM Comparison <span class="beta-tag" style="background: #f59e0b;">Advanced</span></h1>
+                <p class="subtitle" id="subtitle-text">Comparing Standard AM-KPFM vs High Definition FM-KPFM</p>
             </div>
             <a href="index.html" class="back-btn">
                 <span>←</span> Back to Hub
@@ -124,100 +143,62 @@
             <canvas id="sim-canvas"></canvas>
 
             <div class="overlays">
-                <div class="indicator" id="state-indicator">State: <span id="state-bead"></span> <span
-                        id="state-text">SCANNING</span></div>
                 <div class="readout-panel">
                     <div class="readout-item">
-                        <label>Topography (Z)</label>
-                        <span id="z-pos-val">0.00 nm</span>
+                        <label>V_CPD Resolution</label>
+                        <span id="res-val" style="color: #64748b;">~20 mV (Low)</span>
                     </div>
-                    <div class="readout-item">
-                        <label>Potential (CPD)</label>
-                        <span id="potential-val" style="color: #eab308">0.00 mV</span>
-                    </div>
-                </div>
-
-                <!-- Moved Legend Panel -->
-                <div class="potential-legend-panel"
-                    style="background: white; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); width: 200px;">
-                    <div class="potential-map"
-                        style="position: static; width: 100%; height: 15px; margin-bottom: 5px; background: linear-gradient(to right, #3b82f6, #eab308); border-radius: 3px;">
-                    </div>
-                    <div class="legend-labels"
-                        style="display: flex; justify-content: space-between; font-size: 0.7rem; color: #475569;">
-                        <span>-500 mV</span>
-                        <span>+500 mV</span>
-                    </div>
-                    <div
-                        style="text-align: center; color: #1e293b; font-weight: 600; font-size: 0.75rem; margin-top:5px;">
-                        Surface Potential Color</div>
                 </div>
             </div>
 
-            <!-- Positioned absolutely to the right relative to .visualization-area -->
             <div id="edu-overlay" class="edu-card edu-top-right">
                 <div class="edu-header">
                     <span class="edu-icon-main">⚡</span>
-                    <h3>HD-KFM Multifrequency</h3>
+                    <h3 id="edu-title">Standard KPFM (AM)</h3>
                 </div>
-                <ul class="edu-steps">
-                    <li id="step-1" class="step-item active">
-                        <span class="step-num">f1</span>
+                <ul class="edu-steps" id="edu-list">
+                    <!-- Dynamic Content -->
+                    <li class="step-item active">
                         <div class="step-content">
-                            <strong>1st Eigenmode (Mech)</strong>
-                            <small>Topography Feedback (~70kHz)</small>
+                            <strong>Technique</strong>
+                            <small>Amplitude Modulation (Lift Mode)</small>
                         </div>
                     </li>
-                    <li id="step-2" class="step-item active">
-                        <span class="step-num"
-                            style="background: #eab308; color: black; border-color: #eab308;">f2</span>
+                    <li class="step-item active">
                         <div class="step-content">
-                            <strong>2nd Eigenmode (Elec)</strong>
-                            <small>Surface Potential (~400kHz)</small>
-                        </div>
-                    </li>
-                    <li id="step-3" class="step-item active">
-                        <span class="step-num">Q</span>
-                        <div class="step-content">
-                            <strong>High Q-Factor</strong>
-                            <small>Higher Sensitivity & Resolution</small>
+                            <strong>Resolution</strong>
+                            <small>Limited by long-range forces (Stray Cap).</small>
                         </div>
                     </li>
                 </ul>
             </div>
-
-            <!-- Frequency Spectrum Graph (Top, Left of Edu Box) -->
-            <!-- Edu Box is approx 350px width including padding/margin. Positioning Spectrum at right: 380px -->
-            <div class="spectrum-container"
-                style="position: absolute; top: 20px; right: 380px; background: rgba(15,23,42,0.9); padding: 10px; border: 1px solid #334155; border-radius: 8px;">
-                <canvas id="spectrum-canvas" width="280" height="150"></canvas>
-                <div style="text-align: center; color: #94a3b8; font-size: 0.7rem; margin-top:5px;">Multifrequency
-                    Excitation Spectrum</div>
-            </div>
         </main>
 
         <aside class="controls-panel">
-            <div class="control-group">
-                <h3>KFM Parameters</h3>
+            <div class="mode-switch-container">
+                <div class="mode-btn active" id="btn-std">Standard KPFM</div>
+                <div class="mode-btn" id="btn-hd">HD-KFM <span class="hd-tag">PRO</span></div>
+            </div>
 
+            <div class="info-box" style="margin-bottom: 20px;">
+                <h4 id="mode-title">Standard AM-KPFM</h4>
+                <p id="mode-desc">Uses <strong>Amplitude Modulation</strong> on the second pass. The entire cantilever
+                    acts as an antenna, picking up "stray capacitance" from the background, which blurs the resolution.
+                </p>
+            </div>
+
+            <div class="control-group">
+                <h3>Params</h3>
                 <div class="control-item">
-                    <label for="ac-voltage">AC Voltage (V)</label>
-                    <input type="range" id="ac-voltage" min="0.5" max="5" step="0.5" value="2.0">
-                    <span class="value-display" id="ac-val">2.0</span>
+                    <label>Surface Detail (Grain Size)</label>
+                    <input type="range" id="grain-slider" min="10" max="100" value="50">
                 </div>
             </div>
 
             <div class="control-group">
                 <h3>Actions</h3>
-                <button id="btn-start" class="btn-primary">Start Scan</button>
-                <button id="btn-reset" class="btn-secondary">Reset</button>
-            </div>
-
-            <div class="info-box">
-                <h4>What is HD-KFM?</h4>
-                <p>HD-KFM maps the <strong>electrical surface potential</strong> simultaneously with topography.</p>
-                <p>Unlike standard KFM (dual-pass), HD-KFM uses a <strong>Single-Pass</strong> method with 2nd lock-in
-                    amplifier for superior resolution.</p>
+                <button id="btn-reset" class="btn-secondary">Reset Scan</button>
+                <button id="btn-reset" class="btn-secondary">Reset Scan</button>
             </div>
 
             <button class="btn-more-details" id="btn-open-video">
@@ -241,6 +222,8 @@
         const btn = document.getElementById('btn-open-video');
         const close = document.getElementById('btn-close-video');
         const iframe = document.getElementById('youtube-frame');
+        // KPFM Comparison uses the same HD-KFM video significantly? 
+        // User said "same video", so we use the same URL.
         const videoUrl = "https://www.youtube.com/embed/7uabLew-6e8?autoplay=1";
 
         btn.addEventListener('click', () => {
@@ -261,7 +244,7 @@
         });
     </script>
 
-    <script type="module" src="hdkfm.js"></script>
+    <script type="module" src="kpfm.js"></script>
 </body>
 
 </html>

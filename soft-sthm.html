@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soft SThM | Scanning Thermal Microscopy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-title-group">
+                <h1>Soft SThM <span class="beta-tag" style="background: #dc2626;">Thermal</span></h1>
+                <p class="subtitle">Scanning Thermal Microscopy on Soft/Fragile Samples</p>
+            </div>
+            <a href="index.html" class="back-btn">
+                <span>←</span> Back to Hub
+            </a>
+        </header>
+
+        <main class="visualization-area">
+            <canvas id="sim-canvas"></canvas>
+
+            <div class="overlays">
+                <div class="indicator" style="top: 20px; left: 20px;">
+                    <div id="state-bead"></div>
+                    <span id="state-text">Approach</span>
+                </div>
+                <div class="readout-panel" style="top: 70px;">
+                    <div class="readout-item">
+                        <label>Thermal Conductivity</label>
+                        <span id="cond-val">0.00 W/mK</span>
+                    </div>
+                    <div class="readout-item">
+                        <label>Tip Temperature</label>
+                        <span id="temp-val">300.0 K</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="edu-overlay" class="edu-card edu-top-right">
+                <div class="edu-header">
+                    <span class="edu-icon-main">🌡️</span>
+                    <h3>Soft SThM Logic</h3>
+                </div>
+                <ul class="edu-steps">
+                    <li class="step-item active">
+                        <div class="step-content">
+                            <strong>1. Heated Tip</strong>
+                            <small>Probe is maintained at high T.</small>
+                        </div>
+                    </li>
+                    <li class="step-item active">
+                        <div class="step-content">
+                            <strong>2. Gentle Touch</strong>
+                            <small>Intermittent Contact prevents surface melt/drag.</small>
+                        </div>
+                    </li>
+                    <li class="step-item active">
+                        <div class="step-content">
+                            <strong>3. Heat Flux</strong>
+                            <small>Heat flows from tip to sample on contact.</small>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </main>
+
+        <aside class="controls-panel">
+            <div class="info-box" style="margin-bottom: 20px;">
+                <h4>Thermal Imaging</h4>
+                <p><strong>Standard SThM</strong> drags a hot tip, which can melt polymers. <strong>Soft SThM</strong>
+                    hops, measuring thermal conductivity without damaging the sample.</p>
+            </div>
+
+            <div class="control-group">
+                <h3>Thermal Config</h3>
+                <div class="control-item">
+                    <label>Tip Temperature</label>
+                    <input type="range" id="temp-slider" min="300" max="500" value="400">
+                </div>
+                <div class="control-item">
+                    <label>Sample Contrast</label>
+                    <input type="range" id="contrast-slider" min="10" max="100" value="70">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Actions</h3>
+                <button id="btn-toggle-scan" class="btn-primary">Pause Scan</button>
+            </div>
+        </aside>
+    </div>
+
+    <script type="module" src="soft-sthm.js"></script>
+</body>
+
+</html>

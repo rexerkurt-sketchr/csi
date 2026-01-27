@@ -181,11 +181,9 @@ export class ResiScopeApp {
             this.ctx.lineWidth = 2;
 
             for (let m of this.state.measuredCurr) {
-                // Map log R to Y (Inverse of current basically)
-                // Low R = High Y (High Current)
-                // Range 2 (High I) to 12 (Low I)
-                // Y=0 -> R=12, Y=max -> R=2
-                const normH = (12 - m.r) * 15; // Scale factor
+                // Map log R to Y (Direct R mapping: 2=Low, 12=High)
+                // Range 2 to 12
+                const normH = (m.r - 2) * 15; // Scale factor
                 const graphY = offsetY - 150 - normH;
 
                 const sc = toScreen(m.x, 0);
@@ -202,7 +200,7 @@ export class ResiScopeApp {
             }
             this.ctx.stroke();
             this.ctx.fillStyle = '#22c55e';
-            this.ctx.fillText("Current (Log I)", 10, offsetY - 250);
+            this.ctx.fillText("Resistance (Log R)", 10, offsetY - 250);
 
             // Draw Region Labels if scanned
             this.ctx.font = 'bold 11px Inter';
@@ -228,7 +226,7 @@ export class ResiScopeApp {
                     const text = this.formatR(rVal);
 
                     // Calc Y pos same as graph
-                    const normH = (12 - lbl.rLog) * 15;
+                    const normH = (lbl.rLog - 2) * 15;
                     const graphY = offsetY - 150 - normH;
                     const sc = toScreen(lbl.x, 0);
 

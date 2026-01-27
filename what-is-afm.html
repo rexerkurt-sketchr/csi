@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is AFM? | Atomic Force Microscopy Basics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-title-group">
+                <h1>What is AFM? <span class="beta-tag" style="background: #3b82f6;">Foundations</span></h1>
+                <p class="subtitle">Understanding the Core Mechanics of Atomic Force Microscopy</p>
+            </div>
+            <a href="index.html" class="back-btn">
+                <span>←</span> Back to Hub
+            </a>
+        </header>
+
+        <main class="visualization-area">
+            <canvas id="sim-canvas"></canvas>
+
+            <div class="overlays">
+                <div class="readout-panel">
+                    <div class="readout-item">
+                        <label>Laser Position (PSD)</label>
+                        <span id="psd-val">0.00 V</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="edu-overlay" class="edu-card edu-top-right">
+                <div class="edu-header">
+                    <span class="edu-icon-main">🔬</span>
+                    <h3>The Feedback Loop</h3>
+                </div>
+                <ul class="edu-steps">
+                    <li id="step-1" class="step-item active">
+                        <span class="step-num">1</span>
+                        <div class="step-content">
+                            <strong>Tip Scan</strong>
+                            <small>Sharp tip moves over atoms</small>
+                        </div>
+                    </li>
+                    <li id="step-2" class="step-item active">
+                        <span class="step-num">2</span>
+                        <div class="step-content">
+                            <strong>Cantilever Flex</strong>
+                            <small>Surface forces bend the lever</small>
+                        </div>
+                    </li>
+                    <li id="step-3" class="step-item active">
+                        <span class="step-num">3</span>
+                        <div class="step-content">
+                            <strong>Laser Deflection</strong>
+                            <small>Laser beam moves on detector</small>
+                        </div>
+                    </li>
+                    <li id="step-4" class="step-item active">
+                        <span class="step-num">4</span>
+                        <div class="step-content">
+                            <strong>Correction (Z)</strong>
+                            <small>Piezo moves to maintain force</small>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </main>
+
+        <aside class="controls-panel">
+            <div class="info-box" style="margin-bottom: 20px;">
+                <h4>Key Components</h4>
+                <ul style="padding-left: 20px;">
+                    <li><strong>Cantilever & Tip:</strong> The "finger" that feels the surface.</li>
+                    <li><strong>Laser & PSD:</strong> Optical lever system to detect nanometer movements.</li>
+                    <li><strong>Piezo Scanner:</strong> Extremely precise motors for XYZ movement.</li>
+                </ul>
+            </div>
+
+            <div class="control-group">
+                <h3>Try it yourself</h3>
+                <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 15px;">Drag the "Surface Bump" to see how
+                    the laser deflects!</p>
+                <div class="control-item">
+                    <label>Surface Height (Bump/Pit)</label>
+                    <input type="range" id="surface-slider" min="-100" max="100" value="0">
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script type="module" src="what-is-afm.js"></script>
+</body>
+
+</html>

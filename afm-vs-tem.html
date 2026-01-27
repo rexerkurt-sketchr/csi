@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFM vs TEM | Technology Comparison</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .split-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+        }
+
+        .view-panel {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            border-right: 1px solid var(--border);
+        }
+
+        .view-label {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .vs-badge {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1d1d1f;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-style: italic;
+            z-index: 20;
+            border: 4px solid white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-title-group">
+                <h1>AFM vs TEM <span class="beta-tag" style="background: #a855f7;">Comparison</span></h1>
+                <p class="subtitle">Surface Topography vs Internal Structure Projection</p>
+            </div>
+            <a href="index.html" class="back-btn">
+                <span>←</span> Back to Hub
+            </a>
+        </header>
+
+        <main class="visualization-area" style="padding: 0;">
+            <div class="split-container">
+                <div class="view-panel" style="background: #e2e8f0;">
+                    <div class="view-label">TEM (Transmission Electron)</div>
+                    <canvas id="tem-canvas" style="width:100%; height:100%;"></canvas>
+                </div>
+
+                <div class="vs-badge">VS</div>
+
+                <div class="view-panel" style="background: #f8fafc;">
+                    <div class="view-label">AFM (Atomic Force)</div>
+                    <canvas id="afm-canvas" style="width:100%; height:100%;"></canvas>
+                </div>
+            </div>
+
+            <div id="edu-overlay" class="edu-card edu-top-right">
+                <div class="edu-header">
+                    <span class="edu-icon-main">🔬</span>
+                    <h3>Core Difference</h3>
+                </div>
+                <ul class="edu-steps">
+                    <li class="step-item active">
+                        <div class="step-content">
+                            <strong>TEM = Through</strong>
+                            <small>Electrons pass through sample. See INTERNAL density.</small>
+                        </div>
+                    </li>
+                    <li class="step-item active">
+                        <div class="step-content">
+                            <strong>AFM = Surface</strong>
+                            <small>Tip touches surface. See EXTERNAL shape.</small>
+                        </div>
+                    </li>
+                    <li class="step-item active">
+                        <div class="step-content">
+                            <strong>Sample Thickness</strong>
+                            <small>TEM: Must be <100nm. AFM: Any thickness.</small>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </main>
+
+        <aside class="controls-panel">
+            <div class="info-box" style="margin-bottom: 20px;">
+                <h4>Visual Comparison</h4>
+                <p style="margin-bottom: 10px;">We are imaging a "Biological Cell" with a nucleus.</p>
+                <ul style="padding-left: 20px;">
+                    <li><strong>TEM:</strong> See the dark nucleus inside (density). No height info.</li>
+                    <li><strong>AFM:</strong> See the bump of the cell membrane. Nucleus is hidden inside.</li>
+                </ul>
+            </div>
+
+            <div class="control-group">
+                <h3>Imaging Parameters</h3>
+                <div class="control-item">
+                    <label>Internal Density (Nucleus)</label>
+                    <input type="range" id="density-slider" min="0" max="100" value="80">
+                </div>
+                <!-- Maybe rotate view? -->
+            </div>
+        </aside>
+    </div>
+
+    <script type="module" src="afm-vs-tem.js"></script>
+</body>
+
+</html>

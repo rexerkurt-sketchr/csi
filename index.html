@@ -9,66 +9,185 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .section-header {
+            max-width: 1200px;
+            width: 90%;
+            margin: 60px auto 30px auto;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-desc {
+            margin-top: 8px;
+            color: #64748b;
+            font-size: 1rem;
+            max-width: 700px;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="glow-bg"></div>
 
     <header class="brand-header">
         <img src="https://static.wixstatic.com/media/58ed36_448a662be8bf4094b94c29b6b2bd55a6~mv2.png/v1/crop/x_10,y_155,w_1542,h_598/fill/w_322,h_124,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/CSI%20Logo%20(2).png"
-            alt="CSI Instruments Logo" class="brand-logo">
+            alt="CSInstruments Logo" class="brand-logo">
         <h1 class="platform-title">AFM Technology Hub</h1>
-        <p class="platform-subtitle">Interactive simulations demonstrating the advanced physics of CSInstruments'
-            Atomic Force Microscopy modes.</p>
+        <p class="platform-subtitle">Interactive simulations demonstrating the advanced physics of CSInstruments' Atomic
+            Force Microscopy modes.</p>
     </header>
 
-    <div class="modules-grid">
-        <!-- Soft IC Module -->
-        <a href="soft-ic.html" class="module-card">
-            <div class="card-content">
-                <span
-                    style="font-size: 0.8rem; font-weight: 600; color: #0071e3; text-transform: uppercase; margin-bottom: 8px; display: block;">Simulation</span>
-                <h2>Soft Intermittent Contact</h2>
-                <p>Discover the friction-removal benefits of the "Lift-Move-Approach" cycle. Visualize how Soft IC
-                    eliminates shear forces for fragile samples.</p>
-            </div>
-        </a>
+    <div class="main-content">
 
-        <!-- ResiScope Module -->
-        <a href="resiscope.html" class="module-card">
-            <div class="card-content">
-                <span
-                    style="font-size: 0.8rem; font-weight: 600; color: #22c55e; text-transform: uppercase; margin-bottom: 8px; display: block;">Pure
-                    Conductive</span>
-                <h2>ResiScope™</h2>
-                <p>Wide dynamic range C-AFM. See how DSP auto-gain enables measurement from insulators to conductors (10
-                    decades) without saturation.</p>
-            </div>
-        </a>
+        <!-- 1. INTRO -->
+        <div class="section-header" style="margin-top: 20px;">
+            <h2 class="section-title">Foundations</h2>
+            <p class="section-desc">Start here to understand the basic mechanics.</p>
+        </div>
+        <div class="modules-grid" style="grid-template-columns: 1fr;">
+            <a href="what-is-afm.html" class="module-card" style="background: #eff6ff; min-height: 200px;">
+                <div class="card-content">
+                    <span class="card-tag">Basics</span>
+                    <h2 style="font-size: 2rem;">What is AFM?</h2>
+                    <p style="font-size: 1.1rem; max-width: 800px;">A short interactive guide to the Feedback Loop,
+                        Laser Deflection, and Piezo movement. Essential for beginners.</p>
+                </div>
+            </a>
+        </div>
 
-        <!-- Soft ResiScope Module -->
-        <a href="soft-resi.html" class="module-card">
-            <div class="card-content">
-                <span
-                    style="font-size: 0.8rem; font-weight: 600; color: #a855f7; text-transform: uppercase; margin-bottom: 8px; display: block;">Hybrid
-                    Mode</span>
-                <h2>Soft ResiScope™</h2>
-                <p>The best of both worlds. Combine Soft IC's friction-free scanning with ResiScope's electrical
-                    characterization for fragile samples.</p>
-            </div>
-        </a>
+        <!-- 2. CONTEXT (Comparative) -->
+        <div class="section-header">
+            <h2 class="section-title">Industry Context</h2>
+            <p class="section-desc">How AFM compares to other microscopy standards.</p>
+        </div>
+        <div class="modules-grid">
+            <a href="afm-vs-sem.html" class="module-card">
+                <div class="card-content">
+                    <span class="card-tag">3D vs 2D</span>
+                    <h2>AFM vs SEM</h2>
+                    <p>Why AFM provides true height data compared to Scanning Electron Microscopy.</p>
+                </div>
+            </a>
+            <a href="afm-vs-tem.html" class="module-card">
+                <div class="card-content">
+                    <span class="card-tag">Surface vs Bulk</span>
+                    <h2>AFM vs TEM</h2>
+                    <p>Comparing Surface Topography (AFM) with Transmission Electron Structure (TEM).</p>
+                </div>
+            </a>
+        </div>
 
-        <!-- HD-KFM Module -->
-        <a href="hdkfm.html" class="module-card">
-            <div class="card-content">
-                <span
-                    style="font-size: 0.8rem; font-weight: 600; color: #f59e0b; text-transform: uppercase; margin-bottom: 8px; display: block;">Advanced</span>
-                <h2>Discover HD-KFM</h2>
-                <p>Explore High Definition Kelvin Force Microscopy. See how multi-frequency excitation (2nd Eigenmode)
-                    enables superior Surface Potential mapping.</p>
-            </div>
-        </a>
+        <!-- 3. FLAGSHIPS -->
+        <div class="section-header">
+            <h2 class="section-title">Core Technologies</h2>
+            <p class="section-desc">The three pillars of CSInstruments' unique technology stack.</p>
+        </div>
+        <div class="modules-grid">
+            <!-- P1: Soft IC -->
+            <a href="soft-ic.html" class="module-card">
+                <div class="card-content">
+                    <span class="card-tag">Physical Core</span>
+                    <h2>Soft Intermittent Contact</h2>
+                    <p>The foundation of all soft modes. Understand the frictionless "Lift-Move-Approach" cycle.</p>
+                </div>
+            </a>
+            <!-- P2: HD-KFM -->
+            <a href="hdkfm.html" class="module-card">
+                <div class="card-content">
+                    <span class="card-tag">Electrical Flagship</span>
+                    <h2>HD-KFM</h2>
+                    <p>High Definition Kelvin Force Microscopy. Single-pass, dual-frequency surface potential.</p>
+                </div>
+            </a>
+            <!-- P3: ResiScope -->
+            <a href="resiscope.html" class="module-card">
+                <div class="card-content">
+                    <span class="card-tag">Conductivity Flagship</span>
+                    <h2>ResiScope</h2>
+                    <p>Wide Dynamic Range (10 Decades) Current Mapping. DSP-controlled Real-time gain.</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- 4. ADVANCED MODES (Everything Else) -->
+        <div class="section-header">
+            <h2 class="section-title">Specialized Modes</h2>
+            <p class="section-desc">The complete suite of electrical, mechanical, and functional analysis modules.</p>
+        </div>
+        <div class="modules-grid">
+            <!-- Soft MEKA -->
+            <a href="soft-meka.html" class="module-card">
+                <div class="card-content">
+                    <span class="card-tag">Nanomechanics</span>
+                    <h2>Soft MEKA</h2>
+                    <p>Quantitative Nanomechanical Mapping (QNM). Modulus, Adhesion, Stiffness.</p>
+                </div>
+            </a>
+            <!-- Soft ResiScope (Moved Up) -->
+            <a href="soft-resi.html" class="module-card">
+                <div class="card-content">
+                    <span class="card-tag">Hybrid Mode</span>
+                    <h2>Soft ResiScope</h2>
+                    <p>Combining Soft IC with ResiScope for electrical characterization of soft samples.</p>
+                </div>
+            </a>
+            <!-- Soft SThM -->
+            <a href="soft-sthm.html" class="module-card">
+                <div class="card-content">
+                    <span class="card-tag">Thermal Conductivity</span>
+                    <h2>Soft SThM</h2>
+                    <p>Scanning Thermal Microscopy. Thermal mapping on soft surfaces.</p>
+                </div>
+            </a>
+            <!-- KPFM Comparison -->
+            <a href="kpfm.html" class="module-card">
+                <div class="card-content">
+                    <span class="card-tag">Potential Comparison</span>
+                    <h2>KPFM vs HD-KFM</h2>
+                    <p>See why Single-Pass FM-KPFM (High Def) beats Standard AM-KPFM.</p>
+                </div>
+            </a>
+            <!-- Soft PFM (Moved Down to be next to PRFM) -->
+            <a href="soft-pfm.html" class="module-card">
+                <div class="card-content">
+                    <span class="card-tag">Piezoresponse</span>
+                    <h2>Soft PFM</h2>
+                    <p>Frictionless Piezoresponse Force Microscopy for soft/biological samples.</p>
+                </div>
+            </a>
+            <!-- PRFM Comparison -->
+            <a href="prfm.html" class="module-card">
+                <div class="card-content">
+                    <span class="card-tag">Damage Analysis</span>
+                    <h2>PRFM vs Soft PFM</h2>
+                    <p>Damage Control: Compare destructive Contact Mode vs gentle Soft IC.</p>
+                </div>
+            </a>
+            <!-- MFM -->
+            <a href="mfm.html" class="module-card">
+                <div class="card-content">
+                    <span class="card-tag">Magnetic Domains</span>
+                    <h2>MFM + EFC</h2>
+                    <p>Variable Field MFM with Electrical Field Compensation (EFC).</p>
+                </div>
+            </a>
+        </div>
+
     </div>
+
+    <!-- Footer -->
+    <footer style="text-align: center; margin: 60px 0 40px 0; color: #94a3b8; font-size: 0.9rem;">
+        <p>&copy; 2026 CSInstruments. Educational Viz Platform.</p>
+    </footer>
 
 </body>
 

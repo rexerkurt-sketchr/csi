@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRFM vs Soft PFM | Damage Comparison</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .split-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+        }
+
+        .view-panel {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            border-right: 1px solid var(--border);
+        }
+
+        .view-label {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-title-group">
+                <h1>PRFM Comparison <span class="beta-tag" style="background: #dc2626;">Damage Control</span></h1>
+                <p class="subtitle">Standard Contact PRFM vs Friction-Free Soft PFM</p>
+            </div>
+            <a href="index.html" class="back-btn">
+                <span>←</span> Back to Hub
+            </a>
+        </header>
+
+        <main class="visualization-area" style="padding: 0;">
+            <div class="split-container">
+                <div class="view-panel" style="background: #fff1f2;">
+                    <div class="view-label" style="color: #dc2626;">Standard PRFM</div>
+                    <canvas id="std-canvas" style="width:100%; height:100%;"></canvas>
+                </div>
+
+                <div class="view-panel" style="background: #f0fdf4;">
+                    <div class="view-label" style="color: #16a34a;">Soft PFM</div>
+                    <canvas id="soft-canvas" style="width:100%; height:100%;"></canvas>
+                </div>
+            </div>
+
+            <div id="edu-overlay" class="edu-card edu-top-right">
+                <div class="edu-header">
+                    <span class="edu-icon-main">💥</span>
+                    <h3>The Shear Problem</h3>
+                </div>
+                <ul class="edu-steps">
+                    <li class="step-item active">
+                        <div class="step-content">
+                            <strong>Standard PRFM (Contact)</strong>
+                            <small>Tip drags across surface. Tears soft samples.</small>
+                        </div>
+                    </li>
+                    <li class="step-item active">
+                        <div class="step-content">
+                            <strong>Soft PFM (Intermittent Contact)</strong>
+                            <small>Vertical interaction only. Zero shear force.</small>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </main>
+
+        <aside class="controls-panel">
+            <div class="info-box" style="margin-bottom: 20px;">
+                <h4>Sample Integrity</h4>
+                <p>We are imaging a <strong>Fragile Polymer</strong>.</p>
+                <p>Watch how the <strong>Standard Contact Mode</strong> tip destroys the sample surface over time, while
+                    <strong>Soft PFM</strong> leaves it pristine.
+                </p>
+            </div>
+
+            <div class="control-group">
+                <h3>Scanner Links</h3>
+                <div class="control-item">
+                    <label>Scanning Speed</label>
+                    <input type="range" id="speed-slider" min="1" max="10" value="3">
+                </div>
+                <button id="btn-reset" class="btn-primary">Reset Damage</button>
+            </div>
+        </aside>
+    </div>
+
+    <script type="module" src="prfm.js"></script>
+</body>
+
+</html>
