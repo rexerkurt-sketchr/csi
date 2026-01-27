@@ -220,9 +220,11 @@ export class KPFM_Comparison {
             this.ctx.fillRect(x, surfY, 2, 60);
         }
 
-        // Draw Tip
+        // Draw Tip with Resonance
+        const time = Date.now() * 0.03;
+        const vibration = this.isScanning ? Math.sin(time) * 2 : 0; // Vibration effect
         const tipX = w / 2;
-        const tipY = surfY - 40;
+        const tipY = surfY - 40 + vibration;
 
         this.ctx.fillStyle = '#94a3b8';
         this.ctx.beginPath();
