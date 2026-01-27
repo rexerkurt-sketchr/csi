@@ -5,7 +5,7 @@ export class SoftResiApp {
         this.ctx = this.canvas.getContext('2d');
 
         this.config = {
-            scanSpeed: 1.0,
+            scanSpeed: 5, // 1..10
             sampleLength: 2000
         };
 
@@ -17,7 +17,8 @@ export class SoftResiApp {
             surfaceZ: 0,
             force: 0,
             resistance: 0,
-            measuredProfile: []
+            measuredProfile: [],
+            waitTimer: 0 // Frame counter for pauses
         };
 
         this.surface = [];
@@ -71,6 +72,14 @@ export class SoftResiApp {
             this.state.tipX = 0;
             this.state.measuredProfile = [];
         });
+
+        const speedSlider = document.getElementById('speed-slider');
+        const speedDisplay = document.getElementById('speed-val-display');
+        speedSlider.addEventListener('input', (e) => {
+            let val = parseInt(e.target.value);
+            this.config.scanSpeed = val;
+            speedDisplay.textContent = val;
+        });
     }
 
     getSurfaceAt(x) {
@@ -87,7 +96,7 @@ export class SoftResiApp {
         // Soft IC State Machine
         switch (this.state.phase) {
             case 'LIFT':
-                this.state.tipZ += 2;
+                this.state.tipZ += 5; // Faster lift
                 if (this.state.tipZ > contactZ + 50) { // Lift higher
                     this.state.phase = 'MOVE';
                 }
@@ -101,7 +110,7 @@ export class SoftResiApp {
                 this.state.phase = 'APPROACH';
                 break;
             case 'APPROACH':
-                this.state.tipZ -= 2;
+                this.state.tipZ -= 5; // Faster approach
                 if (this.state.tipZ <= contactZ) {
                     this.state.tipZ = contactZ;
                     this.state.force = 1.0; // Target force reached
@@ -111,19 +120,25 @@ export class SoftResiApp {
             case 'MEASURE':
                 // Measure R only at contact
                 this.state.resistance = surf.rLog;
-                this.state.measuredProfile.push({
-                    x: this.state.tipX,
-                    r: this.state.resistance
-                });
 
-                // Hold briefly for visual
-                setTimeout(() => {
-                    if (this.state.phase === 'MEASURE') this.state.phase = 'RETRACT';
-                }, 100);
-                break; // Async wait handled by logic flow usually, but simplifying here
-                // Note: The simple loop causes visual stutter with timeout.
-                // Let's use a counter instead.
-                this.state.phase = 'RETRACT';
+                // Only record once per contact
+                if (this.state.waitTimer === 0) {
+                    this.state.measuredProfile.push({
+                        x: this.state.tipX,
+                        r: this.state.resistance
+                    });
+                }
+
+                // Wait logic based on speed
+                // Speed 10 (Fast) -> 0 delay
+                // Speed 1 (Slow) -> 30 frames delay
+                const delayFrames = (10 - this.config.scanSpeed) * 3;
+
+                this.state.waitTimer++;
+                if (this.state.waitTimer > delayFrames) {
+                    this.state.waitTimer = 0;
+                    this.state.phase = 'RETRACT';
+                }
                 break;
             case 'RETRACT':
                 this.state.force = 0;
@@ -224,7 +239,7 @@ export class SoftResiApp {
 
             if (closest) {
                 const ohms = Math.pow(10, lbl.rLog);
-                const text = ohms > 1e9 ? (ohms / 1e9).toFixed(0) + " GΩ" : (ohms > 1e6 ? (ohms / 1e6).toFixed(0) + " MΩ" : (ohms / 1e3).toFixed(0) + " kΩ");
+                let text = ohms > 1e9 ? (ohms / 1e9).toFixed(0) + " GΩ" : (ohms > 1e6 ? (ohms / 1e6).toFixed(0) + " MΩ" : (ohms / 1e3).toFixed(0) + " kΩ");
                 if (ohms < 1e3) text = ohms.toFixed(0) + " Ω";
 
                 let sc = toScreen(closest.x, closest.r * 5 + 60);
