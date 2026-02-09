@@ -52,9 +52,10 @@ export class Application {
         this.canvas.width = parent.clientWidth;
         this.canvas.height = parent.clientHeight;
 
-        // Re-calc scale to fit surface
+        if (this.canvas.width === 0 || this.canvas.height === 0) return;
+
         this.view.scaleX = (this.canvas.width - 100) / this.config.sampleLength;
-        this.view.offsetY = this.canvas.height - 100;
+        this.view.offsetY = this.canvas.height - (this.canvas.height < 500 ? 50 : 100);
     }
 
     generateSurface() {
@@ -475,6 +476,5 @@ export class Application {
 }
 
 // Start the app
-window.onload = () => {
-    window.app = new Application();
-};
+// Start immediately as module is deferred
+window.app = new Application();

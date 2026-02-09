@@ -44,8 +44,11 @@ export class KFMApplication {
         const parent = this.canvas.parentElement;
         this.canvas.width = parent.clientWidth;
         this.canvas.height = parent.clientHeight;
+
+        if (this.canvas.width === 0 || this.canvas.height === 0) return;
+
         this.view.scaleX = (this.canvas.width - 100) / this.config.sampleLength;
-        this.view.offsetY = this.canvas.height - 100;
+        this.view.offsetY = this.canvas.height - (this.canvas.height < 500 ? 50 : 100);
     }
 
     generateSurface() {
@@ -256,4 +259,4 @@ export class KFMApplication {
     }
 }
 
-window.onload = () => { new KFMApplication(); };
+new KFMApplication();

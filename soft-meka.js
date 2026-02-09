@@ -26,6 +26,8 @@ export class SoftMEKA {
             forceSetpoint: 0.5
         };
 
+        this.view = { scaleX: 1, offsetY: 0 };
+
         this.generateSample();
         this.init();
     }
@@ -67,6 +69,11 @@ export class SoftMEKA {
         const parent = this.canvas.parentElement;
         this.canvas.width = parent.clientWidth;
         this.canvas.height = parent.clientHeight;
+
+        if (this.canvas.width === 0 || this.canvas.height === 0) return;
+
+        this.view.scaleX = (this.canvas.width - 100) / this.config.sampleLength;
+        this.view.offsetY = this.canvas.height - (this.canvas.height < 500 ? 50 : 100);
     }
 
     update() {
@@ -335,4 +342,4 @@ export class SoftMEKA {
     }
 }
 
-window.onload = () => { new SoftMEKA(); };
+new SoftMEKA();

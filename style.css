@@ -50,7 +50,8 @@ body {
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     display: grid;
     grid-template-columns: 1fr 350px;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    /* Header, Content (Viz+Controls) */
     grid-template-areas:
         "header header"
         "viz controls";
@@ -120,6 +121,7 @@ body {
     border-color: #94a3b8;
 }
 
+/* Restored visualization area */
 .visualization-area {
     grid-area: viz;
     position: relative;
@@ -127,7 +129,11 @@ body {
     /* Light background for Viz */
     overflow: hidden;
     border-right: 1px solid var(--border);
+    height: 100%;
+    /* Ensure it fills the grid cell */
 }
+
+/* Ensure it fills the grid cell */
 
 #sim-canvas {
     width: 100%;
@@ -463,19 +469,17 @@ input[type="range"]::-webkit-slider-thumb:hover {
     pointer-events: none;
 }
 
-/* Apple-like Minimalism overrides */
-body {
-    background-color: #ffffff;
-    /* Pure white */
-    background-image: none;
-    /* No pattern */
-    color: #1d1d1f;
-    /* Apple dark gray */
+/* Landing page body override - index.html doesn't use .app-container */
+body:not(:has(.app-container)) {
     display: block;
     height: auto;
     overflow-y: auto;
     overflow-x: hidden;
+    align-items: unset;
+    justify-content: unset;
 }
+
+/* Body kept as original for desktop layout */
 
 /* Landing Page Specifics */
 .brand-header {
@@ -570,78 +574,185 @@ body {
     justify-content: space-between;
 }
 
-/* Mobile/Tablet Adjustments */
-@media (max-width: 768px) {
-    .platform-title {
-        font-size: 2rem;
-    }
 
-    .modules-grid {
-        grid-template-columns: 1fr;
-        /* Stack on mobile */
-        gap: 20px;
-    }
 
-    .module-card {
-        min-height: auto;
-        padding: 30px;
-    }
-}
+/* Mobile/Tablet Adjustments Removed */
 
-.module-card:hover {
-    transform: scale(1.02);
-    background: #ffffff;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-}
 
-.card-content {
-    z-index: 2;
-}
-
-.card-content h2 {
-    font-size: 1.75rem;
-    color: #1d1d1f;
-    font-weight: 600;
-    margin-bottom: 10px;
-    letter-spacing: -0.01em;
-}
-
-.card-content p {
-    color: #1d1d1f;
-    font-size: 1rem;
-    line-height: 1.5;
-    opacity: 0.8;
-}
-
-/* Replaced Emoji Icons with Clean CSS Shapes/Text */
-.card-icon {
-    display: none;
-    /* Hide emojis */
-}
-
-.module-card::after {
-    content: "↗";
-    position: absolute;
-    bottom: 30px;
-    right: 30px;
-    font-size: 1.5rem;
-    color: #0071e3;
-    /* Apple Blue */
-    opacity: 0;
-    transform: translate(-10px, 10px);
-    transition: all 0.4s ease;
-}
-
-.module-card:hover::after {
-    opacity: 1;
-    transform: translate(0, 0);
-}
-
-/* Specific card styling identifiers */
 .module-card[href="soft-ic.html"] {
     background: #fbfbfd;
 }
 
 .module-card[href="hdkfm.html"] {
     background: #fbfbfd;
+}
+
+/* Product Page Specifics */
+.product-hero {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: white;
+    padding: 80px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.product-hero h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    background: linear-gradient(to right, #ffffff, #94a3b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.product-hero p {
+    font-size: 1.25rem;
+    color: #cbd5e1;
+    max-width: 800px;
+    margin: 0 auto 40px auto;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.btn-cta {
+    background: #0284c7;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-cta:hover {
+    background: #0369a1;
+    transform: translateY(-2px);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-outline:hover {
+    border-color: white;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.spec-table-container {
+    max-width: 1000px;
+    margin: 60px auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+}
+
+.spec-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.spec-table th,
+.spec-table td {
+    padding: 16px 24px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.spec-table th {
+    background: #f8fafc;
+    font-weight: 600;
+    color: #475569;
+    width: 30%;
+}
+
+.spec-table tr:last-child td,
+.spec-table tr:last-child th {
+    border-bottom: none;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.feature-item {
+    text-align: left;
+}
+
+.feature-icon {
+    width: 50px;
+    height: 50px;
+    background: #e0f2fe;
+    color: #0284c7;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.feature-item h3 {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+    color: #1e293b;
+}
+
+.feature-item p {
+    color: #64748b;
+    line-height: 1.6;
+}
+
+.comparison-section {
+    background: #f8fafc;
+    padding: 80px 20px;
+    margin-top: 60px;
+}
+
+.comparison-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 40px auto;
+}
+
+.btn-learn-more {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: #ffffff;
+    color: var(--accent);
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.btn-learn-more:hover {
+    background: var(--accent);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

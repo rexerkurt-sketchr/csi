@@ -134,9 +134,12 @@
                 <h1>KPFM Comparison <span class="beta-tag" style="background: #f59e0b;">Advanced</span></h1>
                 <p class="subtitle" id="subtitle-text">Comparing Standard AM-KPFM vs High Definition FM-KPFM</p>
             </div>
-            <a href="index.html" class="back-btn">
-                <span>←</span> Back to Hub
-            </a>
+            <div class="header-actions">
+                <!-- Learn More removed from here -->
+                <a href="index.html" class="back-btn">
+                    <span>←</span> Back to Hub
+                </a>
+            </div>
         </header>
 
         <main class="visualization-area">
@@ -200,45 +203,13 @@
                 <button id="btn-reset" class="btn-secondary">Reset Scan</button>
             </div>
 
+            <a href="https://csi-afm.com" target="_blank" class="btn-learn-more">Learn More at csi-afm.com</a>
+
+
         </aside>
     </div>
 
-    <!-- Video Modal -->
-    <div class="video-modal" id="video-modal">
-        <div class="modal-content">
-            <span class="close-modal" id="btn-close-video">✕ Close</span>
-            <iframe id="youtube-frame" width="100%" height="100%" src="" title="YouTube video player" frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen></iframe>
-        </div>
-    </div>
 
-    <script>
-        const modal = document.getElementById('video-modal');
-        const btn = document.getElementById('btn-open-video');
-        const close = document.getElementById('btn-close-video');
-        const iframe = document.getElementById('youtube-frame');
-        // KPFM Comparison uses the same HD-KFM video significantly? 
-        // User said "same video", so we use the same URL.
-        const videoUrl = "https://www.youtube.com/embed/7uabLew-6e8?autoplay=1";
-
-        btn.addEventListener('click', () => {
-            modal.style.display = 'flex';
-            iframe.src = videoUrl;
-        });
-
-        close.addEventListener('click', () => {
-            modal.style.display = 'none';
-            iframe.src = ""; // Stop video
-        });
-
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.style.display = 'none';
-                iframe.src = "";
-            }
-        });
-    </script>
 
     <script type="module" src="kpfm.js"></script>
 </body>

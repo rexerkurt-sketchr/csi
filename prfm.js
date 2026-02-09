@@ -235,4 +235,4 @@ export class PRFM_Comparison {
     }
 }
 
-window.onload = () => { new PRFM_Comparison(); };
+new PRFM_Comparison();

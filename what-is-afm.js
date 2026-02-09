@@ -5,6 +5,9 @@ export class WhatIsAFM {
         this.ctx = this.canvas.getContext('2d');
         this.surfaceHeight = 0; // 0 to 100
 
+        this.view = { scaleX: 1, offsetY: 0 };
+        this.config = { sampleLength: 1000 }; // Default needed for resize logic
+
         this.init();
     }
 
@@ -27,8 +30,12 @@ export class WhatIsAFM {
         const parent = this.canvas.parentElement;
         this.canvas.width = parent.clientWidth;
         this.canvas.height = parent.clientHeight;
-    }
 
+        if (this.canvas.width === 0 || this.canvas.height === 0) return;
+
+        this.view.scaleX = (this.canvas.width - 100) / this.config.sampleLength;
+        this.view.offsetY = this.canvas.height - (this.canvas.height < 500 ? 50 : 100);
+    }
     draw() {
         const w = this.canvas.width;
         const h = this.canvas.height;
@@ -188,4 +195,4 @@ export class WhatIsAFM {
     }
 }
 
-window.onload = () => { new WhatIsAFM(); };
+new WhatIsAFM();

@@ -19,6 +19,8 @@ export class SoftSThM {
             contrast: 0.7
         };
 
+        this.view = { scaleX: 1, offsetY: 0 };
+
         this.generateSample();
         this.init();
     }
@@ -65,6 +67,11 @@ export class SoftSThM {
         const parent = this.canvas.parentElement;
         this.canvas.width = parent.clientWidth;
         this.canvas.height = parent.clientHeight;
+
+        if (this.canvas.width === 0 || this.canvas.height === 0) return;
+
+        this.view.scaleX = (this.canvas.width - 100) / this.config.sampleLength;
+        this.view.offsetY = this.canvas.height - (this.canvas.height < 500 ? 50 : 100);
     }
 
     update() {
@@ -233,4 +240,4 @@ export class SoftSThM {
     }
 }
 
-window.onload = () => { new SoftSThM(); };
+new SoftSThM();
